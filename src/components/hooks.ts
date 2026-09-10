@@ -5,8 +5,8 @@ import { t as translate, loc as localize } from "@/lib/i18n";
 import type { Locale, Localized } from "@/lib/types";
 import { useNow as useNowClock } from "./use-now";
 
-export function useNow(ms = 250) {
-  return useNowClock(ms);
+export function useNow() {
+  return useNowClock();
 }
 
 export function useLocale() {

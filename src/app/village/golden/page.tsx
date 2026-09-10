@@ -8,7 +8,7 @@ import { useEvent } from "@/lib/store";
 export default function GoldenPage() {
   const { event } = useEvent();
   const locale = useLocale();
-  const now = useNow(250);
+  const now = useNow();
   const seconds = event.goldenStartsAt ? timeUntil(event.goldenStartsAt, now) : 120;
   const game = event.games.find((g) => g.id === "gold-rush");
 

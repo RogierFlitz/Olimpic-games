@@ -24,6 +24,6 @@ function subscribe(onStoreChange: () => void) {
   };
 }
 
-export function useNow(_ms = 250) {
+export function useNow() {
   return useSyncExternalStore(subscribe, () => current, () => 0);
 }

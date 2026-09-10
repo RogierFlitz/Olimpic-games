@@ -8,7 +8,7 @@ import { useNow } from "./use-now";
 export function Toasts() {
   const { event, dismissNotice } = useEvent();
   const locale = useLocale();
-  const now = useNow(500);
+  const now = useNow();
   const latest = event.notices.at(-1);
   if (!latest || now - latest.at > 7000) return null;
 

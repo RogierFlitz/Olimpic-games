@@ -15,7 +15,7 @@ export default function VillageLayout({ children }: { children: React.ReactNode 
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  const now = useNow(250);
+  const now = useNow();
 
   useEffect(() => {
     if (ready && !session?.participantId) router.replace("/");

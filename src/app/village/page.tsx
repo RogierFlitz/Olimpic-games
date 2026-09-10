@@ -9,7 +9,7 @@ import { COUNTRY_TEAM_NUMBER, useEvent } from "@/lib/store";
 export default function HomePage() {
   const { event, session } = useEvent();
   const locale = useLocale();
-  const now = useNow(250);
+  const now = useNow();
   const country = event.countries.find((c) => c.id === session?.countryId) ?? event.countries.find((c) => c.id === "nl")!;
   const ranks = ranking(event);
   const you = ranks.find((r) => r.countryId === country.id)!;
