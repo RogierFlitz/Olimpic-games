@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Cta, LiveDot, StatusPill } from "@/components/shell";
+import { Cta, LiveDot } from "@/components/shell";
 import { loc, t, useLocale, useNow } from "@/components/hooks";
 import { formatClock, gameOf, nextAssignments, ranking, remainingEvents, timeUntil } from "@/lib/ranking";
 import { COUNTRY_TEAM_NUMBER, useEvent } from "@/lib/store";
@@ -54,8 +54,14 @@ export default function HomePage() {
           <p className="font-cond text-[12px] tracking-[0.28em] text-orange">{t(locale, "upNext")}</p>
           <p className="mt-3 font-display text-[86px] leading-none text-gold">{String(game?.station ?? 7).padStart(2, "0")}</p>
           <h2 className="mt-1 font-display text-5xl">{game ? loc(locale, game.name) : "—"}</h2>
-          <p className="mt-4 font-cond text-[12px] tracking-[0.16em] text-white/60">{t(locale, "startOver")}</p>
-          <p className="font-display text-6xl">{formatClock(seconds)}</p>
+          {go ? (
+            <p className="mt-4 font-cond text-lg tracking-[0.16em] text-gold">{t(locale, "now")}</p>
+          ) : (
+            <>
+              <p className="mt-4 font-cond text-[12px] tracking-[0.16em] text-white/60">{t(locale, "startOver")}</p>
+              <p className="font-display text-6xl">{formatClock(seconds)}</p>
+            </>
+          )}
           <p className="mt-2 text-white/80">📍 {t(locale, "station")} {game?.station}</p>
           <div className="mt-5">
             <Cta href={game ? `/village/games/${game.slug}` : "/village/games"}>{t(locale, "viewGame")}</Cta>
@@ -73,7 +79,12 @@ export default function HomePage() {
                 <p className="font-display text-2xl">
                   {String(g?.station).padStart(2, "0")} – {g ? loc(locale, g.shortName) : ""}
                 </p>
-                <StatusPill status={a.status} />
+                <span className="font-cond text-[12px] tracking-[0.12em] text-white/50">
+                  {new Date(a.startsAt).toLocaleTimeString(locale === "nl" ? "nl-NL" : "en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
               </div>
             );
           })}

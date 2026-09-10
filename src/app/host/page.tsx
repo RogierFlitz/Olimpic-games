@@ -45,6 +45,14 @@ export default function HostPage() {
           </div>
         </div>
 
+        <div className="mt-6 space-y-3">
+          <Cta onClick={startNextRound}>{t(locale, "announceNext")}</Cta>
+          <Cta onClick={startGolden}>{t(locale, "startGolden")}</Cta>
+          <Cta onClick={startFinal}>{t(locale, "startFinal")}</Cta>
+          <Cta onClick={startCeremony}>{t(locale, "startCeremony")}</Cta>
+          <Cta onClick={lockScores} ghost>{t(locale, "lockScores")}</Cta>
+        </div>
+
         <section className="mt-6">
           <p className="font-cond tracking-[0.16em] text-gold">{t(locale, "activeStations")}</p>
           <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4">
@@ -85,11 +93,6 @@ export default function HostPage() {
         <div className="mt-8 space-y-3">
           <Cta onClick={() => { setPhase("flame"); }}>{t(locale, "startFlame")}</Cta>
           <Cta onClick={() => { setPhase("opening"); announce("5", "Countdown", "go"); }}>{t(locale, "openGames")}</Cta>
-          <Cta onClick={startNextRound}>{t(locale, "announceNext")}</Cta>
-          <Cta onClick={startGolden}>{t(locale, "startGolden")}</Cta>
-          <Cta onClick={startFinal}>{t(locale, "startFinal")}</Cta>
-          <Cta onClick={lockScores} ghost>{t(locale, "lockScores")}</Cta>
-          <Cta onClick={startCeremony}>{t(locale, "startCeremony")}</Cta>
           <Cta onClick={resetDemo} ghost>{t(locale, "resetDemo")}</Cta>
         </div>
       </div>

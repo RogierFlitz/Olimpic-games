@@ -2,13 +2,28 @@
 
 import { useSyncExternalStore } from "react";
 
-export function useNow(ms = 250) {
-  return useSyncExternalStore(
-    (onStoreChange) => {
-      const id = window.setInterval(onStoreChange, ms);
-      return () => clearInterval(id);
-    },
-    () => Date.now(),
-    () => 0,
-  );
+let current = 0;
+const listeners = new Set<() => void>();
+let interval: number | null = null;
+
+function subscribe(onStoreChange: () => void) {
+  listeners.add(onStoreChange);
+  if (interval == null) {
+    current = Date.now();
+    interval = window.setInterval(() => {
+      current = Date.now();
+      listeners.forEach((l) => l());
+    }, 250);
+  }
+  return () => {
+    listeners.delete(onStoreChange);
+    if (listeners.size === 0 && interval != null) {
+      window.clearInterval(interval);
+      interval = null;
+    }
+  };
+}
+
+export function useNow(_ms = 250) {
+  return useSyncExternalStore(subscribe, () => current, () => 0);
 }

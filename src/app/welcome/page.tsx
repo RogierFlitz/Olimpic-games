@@ -59,7 +59,7 @@ export default function WelcomePage() {
           </div>
           <div className="mt-auto space-y-5 pt-8">
             <Cta href="/village">{t(locale, "enterVillage")}</Cta>
-            <p className="text-center font-cond text-[12px] tracking-[0.14em] text-white/45">
+            <p className="pb-6 text-center font-cond text-[12px] tracking-[0.14em] text-white/45">
               {event.location} · {event.participants.length} {t(locale, "participants")} · {event.countries.length}{" "}
               {t(locale, "countries")} · {event.totalRounds} {t(locale, "disciplines")}
             </p>

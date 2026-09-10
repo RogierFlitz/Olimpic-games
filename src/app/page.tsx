@@ -85,7 +85,7 @@ export default function LandingPage() {
               />
               <Cta type="submit">{t(locale, "joinTheGames")}</Cta>
             </form>
-            <div className="mt-6 flex justify-between font-cond text-[11px] tracking-[0.16em] text-white/45">
+            <div className="mt-6 flex justify-between pb-4 font-cond text-[11px] tracking-[0.16em] text-white/45">
               <a href="/official">{t(locale, "official")}</a>
               <a href="/host">{t(locale, "host")}</a>
               <a href="/admin">{t(locale, "admin")}</a>
