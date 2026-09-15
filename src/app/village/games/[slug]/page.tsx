@@ -4,17 +4,22 @@ import { useParams } from "next/navigation";
 import { Cta } from "@/components/shell";
 import { VillageMap } from "@/components/map";
 import { InstructionFilm } from "@/components/video";
+import { Stamp } from "@/components/visuals";
 import { loc, t, useLocale } from "@/components/hooks";
 import { GAME_LIBRARY } from "@/lib/catalog";
 import { useEvent } from "@/lib/store";
 
 export default function GameDetailPage() {
   const params = useParams<{ slug: string }>();
-  const { event } = useEvent();
+  const { event, session } = useEvent();
   const locale = useLocale();
   const game =
     event.games.find((g) => g.slug === params.slug) ||
     GAME_LIBRARY.find((g) => g.slug === params.slug);
+  const assignment = event.assignments.find(
+    (a) => a.gameId === game?.id && a.countryIds.includes(session?.countryId ?? "nl"),
+  );
+  const done = assignment?.status === "completed";
 
   if (!game) {
     return <p className="p-6">{locale === "nl" ? "Spel niet gevonden." : "Game not found."}</p>;
@@ -22,7 +27,10 @@ export default function GameDetailPage() {
 
   return (
     <div className="safe-bottom safe-top px-5 pb-8">
-      <p className="font-display text-[88px] leading-none text-gold">{String(game.station || 0).padStart(2, "0")}</p>
+      <div className="flex items-start justify-between">
+        <p className="font-display text-[88px] leading-none text-gold">{String(game.station || 0).padStart(2, "0")}</p>
+        {done ? <Stamp label="OK" icon="✓" /> : null}
+      </div>
       <h1 className="font-display text-5xl">{loc(locale, game.name)}</h1>
       <p className="mt-2 font-cond text-lg tracking-[0.12em] text-orange">{loc(locale, game.tagline)}</p>
 

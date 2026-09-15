@@ -74,10 +74,11 @@ export function BottomNav() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`flex flex-col items-center gap-1 py-1 text-[10px] font-cond tracking-[0.16em] ${
+                className={`relative flex flex-col items-center gap-1 py-1 text-[10px] font-cond tracking-[0.16em] ${
                   active ? "text-orange" : "text-white/55"
                 }`}
               >
+                {active ? <span className="absolute -top-2 h-[3px] w-6 rounded-full bg-orange" /> : null}
                 <item.icon active={active} />
                 {item.label}
               </Link>

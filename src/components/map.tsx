@@ -14,12 +14,11 @@ export function VillageMap({
   const stations = games.filter((g) => g.station > 0).sort((a, b) => a.station - b.station);
 
   return (
-    <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#c9b48a]">
-      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#4ea3c9] to-transparent opacity-90" />
+    <div className="sand-map relative overflow-hidden rounded-[24px] border border-white/10">
       <p className="relative px-4 pt-3 text-center font-cond text-[11px] tracking-[0.3em] text-navy/70">
         {t(locale, "sea")}
       </p>
-      <div className="relative mx-4 mt-6 rounded-full bg-navy px-4 py-3 text-center">
+      <div className="relative mx-4 mt-4 rounded-full bg-navy px-4 py-3 text-center shadow-lg">
         <p className="font-cond text-[11px] tracking-[0.2em] text-gold">🔥 {t(locale, "centralArena")}</p>
       </div>
       <div className="grid grid-cols-3 gap-2 p-4 pb-16">
@@ -28,10 +27,15 @@ export function VillageMap({
           return (
             <div
               key={g.id}
-              className={`rounded-2xl px-2 py-3 text-center ${
+              className={`relative rounded-2xl px-2 py-3 text-center ${
                 hot ? "pulse-orange bg-orange text-white" : "bg-navy/90 text-white"
               }`}
             >
+              {hot ? (
+                <span className="absolute -top-2 left-1/2 -translate-x-1/2 font-cond text-[9px] tracking-[0.14em] text-navy">
+                  → {t(locale, "yourStation")}
+                </span>
+              ) : null}
               <p className="font-display text-2xl leading-none">{String(g.station).padStart(2, "0")}</p>
               <p className="mt-1 font-cond text-[10px] tracking-[0.08em]">{loc(locale, g.shortName)}</p>
             </div>

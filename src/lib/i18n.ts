@@ -131,6 +131,19 @@ export const ui = {
   staff: { nl: "Staff", en: "Staff" },
   host: { nl: "HOST", en: "HOST" },
   pts: { nl: "pts", en: "pts" },
+  toGold: { nl: "TO GOLD", en: "TO GOLD" },
+  passport: { nl: "OLYMPIC PASSPORT", en: "OLYMPIC PASSPORT" },
+  medalCabinet: { nl: "MEDAL CABINET", en: "MEDAL CABINET" },
+  stamps: { nl: "STAMPS", en: "STAMPS" },
+  gamesPlayed: { nl: "games played", en: "games played" },
+  hiddenChallenge: { nl: "HIDDEN GOLDEN CHALLENGE", en: "HIDDEN GOLDEN CHALLENGE" },
+  hiddenHint: { nl: "Vind het gouden token bij Station 07.", en: "Find the gold token at Station 07." },
+  photoWall: { nl: "PHOTO WALL", en: "PHOTO WALL" },
+  addHome: { nl: "Zet op je beginscherm", en: "Add to home screen" },
+  later: { nl: "Later", en: "Later" },
+  yourStation: { nl: "JOUW STATION", en: "YOUR STATION" },
+  recap: { nl: "EVENT RECAP", en: "EVENT RECAP" },
+  storyShare: { nl: "STORY CARD", en: "STORY CARD" },
 } as const satisfies Record<string, Localized>;
 
 export function t(locale: Locale, key: keyof typeof ui, vars?: Record<string, string | number>) {

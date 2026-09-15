@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { BottomNav, Cta, Phone } from "@/components/shell";
 import { OfflineBanner, Toasts } from "@/components/toasts";
+import { InstallHint } from "@/components/pwa";
 import { Flame } from "@/components/visuals";
 import { t, useLocale, useNow } from "@/components/hooks";
 import { formatClock, timeUntil } from "@/lib/ranking";
@@ -26,6 +27,7 @@ export default function VillageLayout({ children }: { children: React.ReactNode 
   return (
     <Phone>
       <OfflineBanner />
+      <InstallHint />
       <Toasts />
       {event.phase === "golden" && !pathname.includes("gold-rush") && pathname !== "/village/golden" ? (
         <GoldenTakeover now={now} />
