@@ -4,9 +4,10 @@ import { useParams } from "next/navigation";
 import { Cta } from "@/components/shell";
 import { VillageMap } from "@/components/map";
 import { InstructionFilm } from "@/components/video";
-import { Stamp } from "@/components/visuals";
+import { Stamp, VsStrip } from "@/components/visuals";
 import { loc, t, useLocale } from "@/components/hooks";
 import { GAME_LIBRARY } from "@/lib/catalog";
+import { opponentsOf } from "@/lib/ranking";
 import { useEvent } from "@/lib/store";
 
 export default function GameDetailPage() {
@@ -20,6 +21,8 @@ export default function GameDetailPage() {
     (a) => a.gameId === game?.id && a.countryIds.includes(session?.countryId ?? "nl"),
   );
   const done = assignment?.status === "completed";
+  const country = event.countries.find((c) => c.id === (session?.countryId ?? "nl"));
+  const foes = game && assignment && country ? opponentsOf(event, assignment, country.id) : [];
 
   if (!game) {
     return <p className="p-6">{locale === "nl" ? "Spel niet gevonden." : "Game not found."}</p>;
@@ -33,6 +36,14 @@ export default function GameDetailPage() {
       </div>
       <h1 className="font-display text-5xl">{loc(locale, game.name)}</h1>
       <p className="mt-2 font-cond text-lg tracking-[0.12em] text-orange">{loc(locale, game.tagline)}</p>
+      {country && foes.length ? (
+        <div className="mt-4">
+          <VsStrip
+            left={{ flag: country.flag, code: country.code }}
+            right={foes.map((f) => ({ flag: f.flag, code: f.code }))}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-5 overflow-hidden rounded-[24px]">
         <div className="hero-photo aspect-[16/10]" style={{ backgroundImage: `url(${game.image})` }} />
@@ -102,7 +113,11 @@ export default function GameDetailPage() {
         <Cta href="/village/map">{t(locale, "takeMeThere")}</Cta>
       </div>
       <div className="mt-4">
-        <VillageMap games={event.games} highlightStation={game.station} />
+        <VillageMap
+          games={event.games}
+          highlightStation={game.station}
+          flags={country && assignment ? [country, ...foes] : undefined}
+        />
         <p className="mt-3 text-center font-cond text-[12px] tracking-[0.12em] text-white/50">
           {t(locale, "fromVillage")}: {t(locale, "walkTime")}
         </p>

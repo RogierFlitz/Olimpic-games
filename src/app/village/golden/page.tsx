@@ -15,7 +15,7 @@ export default function GoldenPage() {
   return (
     <div className="safe-bottom safe-top px-5 text-center">
       <p className="text-5xl">⭐</p>
-      <h1 className="mt-3 font-display text-6xl">{t(locale, "goldenEvent")}</h1>
+      <h1 className="mt-3 font-display text-6xl foil-text">{t(locale, "goldenEvent")}</h1>
       <p className="mt-2 font-cond text-2xl tracking-[0.16em] text-gold">{t(locale, "doublePoints")}</p>
       <p className="mt-2 text-white/70">{t(locale, "everythingChange")}</p>
       <p className="mt-8 font-cond tracking-[0.2em] text-white/50">{t(locale, "startsIn")}</p>

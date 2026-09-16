@@ -89,3 +89,84 @@ export function RaceBar({ value, max, hot = false }: { value: number; max: numbe
     </div>
   );
 }
+
+export function FlagWave({ flag, size = "text-6xl" }: { flag: string; size?: string }) {
+  return <span className={`flag-wave inline-block origin-bottom ${size}`}>{flag}</span>;
+}
+
+export function VsStrip({
+  left,
+  right,
+}: {
+  left: { flag: string; code: string };
+  right: { flag: string; code: string }[];
+}) {
+  return (
+    <div className="vs-strip flex items-center justify-center gap-3">
+      <span className="font-display text-3xl">
+        {left.flag} {left.code}
+      </span>
+      <span className="font-display text-2xl text-gold">VS</span>
+      <span className="font-display text-3xl">
+        {right.length ? right.map((r) => `${r.flag} ${r.code}`).join("  ") : "—"}
+      </span>
+    </div>
+  );
+}
+
+export function Podium({
+  gold,
+  silver,
+  bronze,
+}: {
+  gold?: { flag: string; name: string; points: number };
+  silver?: { flag: string; name: string; points: number };
+  bronze?: { flag: string; name: string; points: number };
+}) {
+  return (
+    <div className="mt-8 flex items-end justify-center gap-2">
+      <div className="flex w-[30%] flex-col items-center">
+        {silver ? (
+          <>
+            <p className="text-3xl">{silver.flag}</p>
+            <Medal place={2} size={40} />
+            <p className="mt-1 font-display text-xl leading-none">{silver.name}</p>
+          </>
+        ) : (
+          <p className="mb-2 font-display text-3xl text-white/20">2</p>
+        )}
+        <div className="mt-2 flex h-24 w-full items-end justify-center rounded-t-2xl bg-white/15 pb-3">
+          <p className="font-display text-2xl">{silver?.points ?? ""}</p>
+        </div>
+      </div>
+      <div className="flex w-[36%] flex-col items-center">
+        {gold ? (
+          <>
+            <p className="text-4xl">{gold.flag}</p>
+            <Medal place={1} size={56} />
+            <p className="mt-1 font-display text-2xl leading-none">{gold.name}</p>
+          </>
+        ) : (
+          <p className="mb-2 font-display text-4xl text-white/20">1</p>
+        )}
+        <div className="mt-2 flex h-36 w-full items-end justify-center rounded-t-2xl bg-gold pb-3 text-navy">
+          <p className="font-display text-3xl">{gold?.points ?? ""}</p>
+        </div>
+      </div>
+      <div className="flex w-[30%] flex-col items-center">
+        {bronze ? (
+          <>
+            <p className="text-3xl">{bronze.flag}</p>
+            <Medal place={3} size={40} />
+            <p className="mt-1 font-display text-xl leading-none">{bronze.name}</p>
+          </>
+        ) : (
+          <p className="mb-2 font-display text-3xl text-white/20">3</p>
+        )}
+        <div className="mt-2 flex h-16 w-full items-end justify-center rounded-t-2xl bg-white/10 pb-3">
+          <p className="font-display text-2xl">{bronze?.points ?? ""}</p>
+        </div>
+      </div>
+    </div>
+  );
+}

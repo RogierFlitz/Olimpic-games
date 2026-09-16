@@ -97,6 +97,42 @@ export function remainingEvents(event: EventState, countryId: string) {
   ).length;
 }
 
+export function opponentsOf(event: EventState, assignment: Assignment, countryId: string) {
+  return assignment.countryIds
+    .filter((id) => id !== countryId)
+    .map((id) => event.countries.find((c) => c.id === id))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c));
+}
+
+export function lastCompleted(event: EventState, countryId: string) {
+  return teamSchedule(event, countryId)
+    .filter((a) => a.status === "completed")
+    .at(-1);
+}
+
+export function villageFeed(event: EventState) {
+  const items: {
+    countryId: string;
+    medal: "gold" | "silver" | "bronze";
+    gameId: string;
+    round: number;
+    points: number;
+  }[] = [];
+  for (const a of event.assignments) {
+    if (a.status !== "completed") continue;
+    for (const [countryId, medal] of Object.entries(a.medals)) {
+      items.push({
+        countryId,
+        medal,
+        gameId: a.gameId,
+        round: a.round,
+        points: a.pointsAwarded[countryId] ?? 0,
+      });
+    }
+  }
+  return items.sort((a, b) => b.round - a.round || a.medal.localeCompare(b.medal));
+}
+
 export function formatClock(totalSeconds: number) {
   const s = Math.max(0, Math.floor(totalSeconds));
   const m = Math.floor(s / 60);
