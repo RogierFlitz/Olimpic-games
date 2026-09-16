@@ -3,15 +3,27 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { Cta, LiveDot } from "@/components/shell";
+import { FlagWave, VsStrip } from "@/components/visuals";
+import { LiveTicker, useGoldenToken } from "@/components/live";
 import { loc, t, useLocale, useNow } from "@/components/hooks";
-import { formatClock, gameOf, nextAssignments, ranking, remainingEvents, timeUntil } from "@/lib/ranking";
-import { playGoCue } from "@/lib/fx";
+import {
+  formatClock,
+  gameOf,
+  lastCompleted,
+  nextAssignments,
+  opponentsOf,
+  ranking,
+  remainingEvents,
+  timeUntil,
+} from "@/lib/ranking";
+import { playGoCue, playReadyCue } from "@/lib/fx";
 import { COUNTRY_TEAM_NUMBER, useEvent } from "@/lib/store";
 
 export default function HomePage() {
   const { event, session } = useEvent();
   const locale = useLocale();
   const now = useNow();
+  const { found } = useGoldenToken();
   const country = event.countries.find((c) => c.id === session?.countryId) ?? event.countries.find((c) => c.id === "nl")!;
   const ranks = ranking(event);
   const you = ranks.find((r) => r.countryId === country.id)!;
@@ -26,24 +38,33 @@ export default function HomePage() {
   const upcoming = nextAssignments(event, country.id).slice(0, 2);
   const seconds = up ? timeUntil(up.startsAt, now) : 0;
   const go = Boolean(seconds <= 0 && up && up.status !== "completed");
+  const ready = Boolean(!go && seconds > 0 && seconds <= 10);
+  const urgent = Boolean(!go && seconds > 0 && seconds <= 60);
   const gold = ranks[0];
   const diff = gold && you ? Math.max(0, gold.points - you.points) : 0;
   const left = remainingEvents(event, country.id);
   const place =
     you.rank === 1 ? "1ST" : you.rank === 2 ? "2ND" : you.rank === 3 ? "3RD" : `${you.rank}TH`;
+  const foes = up ? opponentsOf(event, up, country.id) : [];
+  const last = lastCompleted(event, country.id);
+  const lastGame = last ? gameOf(event, last) : undefined;
+  const lastMedal =
+    last?.medals[country.id] === "gold" ? "🥇" : last?.medals[country.id] === "silver" ? "🥈" : last?.medals[country.id] === "bronze" ? "🥉" : "";
 
   useEffect(() => {
+    if (ready) playReadyCue();
     if (go) playGoCue();
-  }, [go]);
+  }, [go, ready]);
 
   return (
     <div className="safe-bottom safe-top px-5">
       <header className="flex items-start justify-between">
         <div>
           <p className="font-cond text-[12px] tracking-[0.28em] text-gold">{t(locale, "eventTitle")}</p>
-          <p className="mt-1 text-xl font-semibold">
-            {country.flag} {loc(locale, country.name).toUpperCase()}
+          <p className="mt-1 flex items-center gap-2 text-xl font-semibold">
+            <FlagWave flag={country.flag} size="text-3xl" /> {loc(locale, country.name).toUpperCase()}
           </p>
+          <span className="team-stripe mt-2 block" style={{ background: country.color }} />
         </div>
         <p className="font-cond text-[11px] tracking-[0.14em] text-white/60">
           <LiveDot />
@@ -58,6 +79,14 @@ export default function HomePage() {
             {t(locale, "proceedTo")} {t(locale, "station")} {String(game?.station ?? 7).padStart(2, "0")}
           </p>
           <h2 className="mt-3 font-display text-4xl">{game ? loc(locale, game.name) : "Olympic Crane"}</h2>
+          {foes.length ? (
+            <div className="mt-4">
+              <VsStrip
+                left={{ flag: country.flag, code: country.code }}
+                right={foes.map((f) => ({ flag: f.flag, code: f.code }))}
+              />
+            </div>
+          ) : null}
           <div className="mt-6">
             <Link
               href="/village/map"
@@ -81,13 +110,25 @@ export default function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/75 to-navy/25" />
           <div className="relative p-5">
-            <p className="font-cond text-[12px] tracking-[0.28em] text-orange">{t(locale, "upNext")}</p>
+            <p className="font-cond text-[12px] tracking-[0.28em] text-orange">
+              {ready ? t(locale, "getReady") : t(locale, "upNext")}
+            </p>
             <p className="mt-3 font-display text-[86px] leading-none foil-text">
               {String(game?.station ?? 7).padStart(2, "0")}
             </p>
             <h2 className="mt-1 font-display text-5xl">{game ? loc(locale, game.name) : "—"}</h2>
+            {foes.length ? (
+              <div className="mt-3">
+                <VsStrip
+                  left={{ flag: country.flag, code: country.code }}
+                  right={foes.map((f) => ({ flag: f.flag, code: f.code }))}
+                />
+              </div>
+            ) : (
+              <p className="mt-3 font-cond text-[12px] tracking-[0.16em] text-white/55">{t(locale, "yourHeat")}</p>
+            )}
             <p className="mt-4 font-cond text-[12px] tracking-[0.16em] text-white/60">{t(locale, "startOver")}</p>
-            <p className="font-display text-6xl">{formatClock(seconds)}</p>
+            <p className={`font-display text-6xl ${urgent ? "urgent-clock" : ""}`}>{formatClock(seconds)}</p>
             <p className="mt-2 text-white/80">
               📍 {t(locale, "station")} {game?.station}
             </p>
@@ -116,6 +157,14 @@ export default function HomePage() {
           <p className="font-cond text-[10px] tracking-[0.14em]">{t(locale, "toGold")}</p>
         </div>
       </section>
+
+      {last && lastGame ? (
+        <p className="mt-3 text-center font-cond text-[12px] tracking-[0.14em] text-white/55">
+          {t(locale, "lastResult")} · {lastMedal} {loc(locale, lastGame.shortName)} · +{last.pointsAwarded[country.id] ?? 0}
+        </p>
+      ) : null}
+
+      <LiveTicker />
 
       <ol className="mt-4 space-y-1">
         {ranks.slice(0, 3).map((r) => {
@@ -147,11 +196,19 @@ export default function HomePage() {
         <div className="mt-2 space-y-2">
           {upcoming.map((a) => {
             const g = gameOf(event, a);
+            const nextFoes = opponentsOf(event, a, country.id);
             return (
               <div key={a.id} className="flex items-center justify-between rounded-2xl border border-white/10 px-4 py-3">
-                <p className="font-display text-2xl">
-                  {String(g?.station).padStart(2, "0")} – {g ? loc(locale, g.shortName) : ""}
-                </p>
+                <div>
+                  <p className="font-display text-2xl">
+                    {String(g?.station).padStart(2, "0")} – {g ? loc(locale, g.shortName) : ""}
+                  </p>
+                  {nextFoes.length ? (
+                    <p className="font-cond text-[11px] tracking-[0.12em] text-white/45">
+                      {t(locale, "versus")} {nextFoes.map((f) => f.code).join(" · ")}
+                    </p>
+                  ) : null}
+                </div>
                 <span className="font-cond text-[12px] tracking-[0.12em] text-white/50">
                   {new Date(a.startsAt).toLocaleTimeString(locale === "nl" ? "nl-NL" : "en-GB", {
                     hour: "2-digit",
@@ -181,7 +238,7 @@ export default function HomePage() {
       </section>
 
       <p className="mt-4 rounded-2xl border border-gold/25 bg-gold/10 px-4 py-3 text-center font-cond text-[11px] tracking-[0.14em] text-gold">
-        ⭐ {t(locale, "hiddenChallenge")} — {t(locale, "hiddenHint")}
+        {found ? `✦ ${t(locale, "tokenFound")}` : `⭐ ${t(locale, "hiddenChallenge")} — ${t(locale, "hiddenHint")}`}
       </p>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Cta } from "@/components/shell";
-import { Confetti, Medal } from "@/components/visuals";
+import { Confetti, Podium } from "@/components/visuals";
 import { loc, t, useLocale } from "@/components/hooks";
 import { ranking } from "@/lib/ranking";
 import { useEvent } from "@/lib/store";
@@ -11,56 +11,41 @@ export default function CeremonyPage() {
   const { event } = useEvent();
   const locale = useLocale();
   const rows = ranking(event);
-  const gold = event.countries.find((c) => c.id === rows[0]?.countryId);
-  const silver = event.countries.find((c) => c.id === rows[1]?.countryId);
-  const bronze = event.countries.find((c) => c.id === rows[2]?.countryId);
+  const goldC = event.countries.find((c) => c.id === rows[0]?.countryId);
+  const silverC = event.countries.find((c) => c.id === rows[1]?.countryId);
+  const bronzeC = event.countries.find((c) => c.id === rows[2]?.countryId);
   const spirit = event.countries.find((c) => c.id === (event.awards.teamSpiritCountryId || "it"));
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const times = [800, 2800, 5200, 7800];
+    const times = [600, 1800, 3400, 6200];
     const ids = times.map((ms, i) => setTimeout(() => setStep(i + 1), ms));
     return () => ids.forEach(clearTimeout);
   }, []);
 
   return (
     <div className="safe-bottom safe-top relative overflow-hidden px-5 text-center">
-      <Confetti run={step >= 4} />
+      <Confetti run={step >= 3} />
       <p className="font-cond tracking-[0.28em] text-gold">{t(locale, "resultsIn")}</p>
+      <h1 className="mt-2 font-display text-5xl">{t(locale, "champions")}</h1>
 
-      {step >= 1 && bronze ? (
-        <div className="rise mt-10">
-          <Medal place={3} />
-          <p className="font-cond tracking-[0.2em]">{t(locale, "bronze")}</p>
-          <p className="font-display text-4xl">
-            {bronze.flag} {t(locale, "team")} {loc(locale, bronze.name).toUpperCase()}
-          </p>
-        </div>
-      ) : null}
-
-      {step >= 2 && silver ? (
-        <div className="rise mt-8">
-          <Medal place={2} />
-          <p className="font-cond tracking-[0.2em]">{t(locale, "silver")}</p>
-          <p className="font-display text-4xl">
-            {silver.flag} {t(locale, "team")} {loc(locale, silver.name).toUpperCase()}
-          </p>
-        </div>
-      ) : null}
-
-      {step >= 3 && gold ? (
-        <div className="rise mt-10 rounded-[28px] bg-gold px-4 py-8 text-navy">
-          <Medal place={1} size={72} />
-          <p className="font-display text-5xl">{t(locale, "champions")}</p>
-          <p className="mt-3 text-5xl">{gold.flag}</p>
-          <p className="font-display text-5xl">
-            {t(locale, "team")} {loc(locale, gold.name).toUpperCase()}
-          </p>
-          <p className="mt-4 font-cond tracking-[0.16em]">
-            {t(locale, "finalScore")} {rows[0].points} {t(locale, "pts")}
-          </p>
-        </div>
-      ) : null}
+      <Podium
+        bronze={
+          step >= 1 && bronzeC && rows[2]
+            ? { flag: bronzeC.flag, name: loc(locale, bronzeC.name).toUpperCase(), points: rows[2].points }
+            : undefined
+        }
+        silver={
+          step >= 2 && silverC && rows[1]
+            ? { flag: silverC.flag, name: loc(locale, silverC.name).toUpperCase(), points: rows[1].points }
+            : undefined
+        }
+        gold={
+          step >= 3 && goldC && rows[0]
+            ? { flag: goldC.flag, name: loc(locale, goldC.name).toUpperCase(), points: rows[0].points }
+            : undefined
+        }
+      />
 
       {step >= 4 && spirit ? (
         <div className="rise mt-8">

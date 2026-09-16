@@ -1,6 +1,7 @@
 "use client";
 
 import { loc, t, useLocale } from "@/components/hooks";
+import { LiveTicker } from "@/components/live";
 import { RaceBar } from "@/components/visuals";
 import { ranking } from "@/lib/ranking";
 import { useEvent } from "@/lib/store";
@@ -19,6 +20,7 @@ export default function RankingPage() {
     <div className="safe-bottom safe-top px-5">
       <p className="font-cond text-[12px] tracking-[0.28em] text-gold">{t(locale, "live")}</p>
       <h1 className="mt-1 font-display text-5xl">{t(locale, "liveRanking")}</h1>
+      <LiveTicker />
       <ol className="mt-6 space-y-3">
         {rows.map((r) => {
           const c = event.countries.find((c) => c.id === r.countryId)!;
