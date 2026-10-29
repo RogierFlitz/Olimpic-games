@@ -1,7 +1,8 @@
 "use client";
 
 import { loc, t, useLocale } from "@/components/hooks";
-import { Medal, Stamp } from "@/components/visuals";
+import { FlagWave, Medal, Stamp } from "@/components/visuals";
+import { useGoldenToken } from "@/components/live";
 import { gameOf, medalCounts, pointsFor, teamSchedule } from "@/lib/ranking";
 import { TEAM_ACHIEVEMENTS } from "@/lib/seed";
 import { useEvent } from "@/lib/store";
@@ -16,13 +17,17 @@ export default function TeamPage() {
   const badges = TEAM_ACHIEVEMENTS[country.id] ?? [];
   const schedule = teamSchedule(event, country.id);
   const played = schedule.filter((a) => a.status === "completed");
+  const { found } = useGoldenToken();
 
   return (
     <div className="safe-bottom safe-top px-5">
-      <p className="text-6xl">{country.flag}</p>
+      <p className="text-6xl">
+        <FlagWave flag={country.flag} />
+      </p>
       <h1 className="mt-2 font-display text-5xl">
         {t(locale, "team")} {loc(locale, country.name).toUpperCase()}
       </h1>
+      <span className="team-stripe mx-auto mt-3 block" style={{ background: country.color }} />
       <p className="mt-2 font-cond text-lg tracking-[0.14em] text-gold">“{loc(locale, country.motto)}”</p>
 
       <section className="card mt-6 p-5">
@@ -66,6 +71,7 @@ export default function TeamPage() {
                 : String(g.station).padStart(2, "0");
             return <Stamp key={a.id} label={loc(locale, g.shortName)} icon={icon} muted={a.status !== "completed"} />;
           })}
+          {found ? <Stamp label={t(locale, "tokenStamp")} icon="✦" /> : null}
         </div>
       </section>
 
@@ -91,6 +97,11 @@ export default function TeamPage() {
               </p>
             </div>
           ))}
+          {found ? (
+            <div className="rounded-2xl border border-gold/30 bg-gold/10 px-4 py-4">
+              <p className="font-display text-2xl">✦ {t(locale, "tokenFound")}</p>
+            </div>
+          ) : null}
         </div>
       </section>
     </div>

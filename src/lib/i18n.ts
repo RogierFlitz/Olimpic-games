@@ -144,6 +144,18 @@ export const ui = {
   yourStation: { nl: "JOUW STATION", en: "YOUR STATION" },
   recap: { nl: "EVENT RECAP", en: "EVENT RECAP" },
   storyShare: { nl: "STORY CARD", en: "STORY CARD" },
+  versus: { nl: "VS", en: "VS" },
+  lastResult: { nl: "LAATSTE RESULTAAT", en: "LAST RESULT" },
+  getReady: { nl: "GET READY", en: "GET READY" },
+  aroundVillage: { nl: "AROUND THE VILLAGE", en: "AROUND THE VILLAGE" },
+  yourHeat: { nl: "JOUW HEAT", en: "YOUR HEAT" },
+  tokenFound: { nl: "GOLDEN TOKEN", en: "GOLDEN TOKEN" },
+  tokenBody: { nl: "Je vond het gouden token bij Station 07.", en: "You found the gold token at Station 07." },
+  tokenStamp: { nl: "TOKEN", en: "TOKEN" },
+  thisWay: { nl: "THIS WAY", en: "THIS WAY" },
+  tapPhoto: { nl: "Tik voor fullscreen", en: "Tap for fullscreen" },
+  close: { nl: "SLUITEN", en: "CLOSE" },
+  heat: { nl: "HEAT", en: "HEAT" },
 } as const satisfies Record<string, Localized>;
 
 export function t(locale: Locale, key: keyof typeof ui, vars?: Record<string, string | number>) {

@@ -263,3 +263,120 @@ select {
   background-clip: text;
   color: transparent;
 }
+
+.ticker-mask {
+  overflow: hidden;
+}
+
+.ticker-track {
+  display: inline-block;
+  min-width: 200%;
+  padding-left: 1rem;
+  animation: ticker 22s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.flag-wave {
+  animation: flag-wave 2.4s ease-in-out infinite;
+}
+
+@keyframes flag-wave {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+.urgent-clock {
+  animation: urgent 0.7s ease-in-out infinite;
+  color: var(--orange-hot);
+}
+
+@keyframes urgent {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.85;
+  }
+}
+
+.sea-band {
+  position: relative;
+  height: 34px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #5eb3d4 0%, #3a9bc4 100%);
+}
+
+.sea-band::before,
+.sea-band::after {
+  content: "";
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  animation: wave 4.5s ease-in-out infinite;
+}
+
+.sea-band::after {
+  top: 12px;
+  opacity: 0.45;
+  animation-duration: 6s;
+}
+
+@keyframes wave {
+  50% {
+    transform: translateX(8%);
+  }
+}
+
+.token-sparkle {
+  animation: sparkle 1.4s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 4px #e0b422);
+  }
+  50% {
+    transform: scale(1.18) rotate(12deg);
+    filter: drop-shadow(0 0 10px #f3d36a);
+  }
+}
+
+.team-stripe {
+  height: 4px;
+  width: 72px;
+  border-radius: 999px;
+}
+
+.map-path {
+  stroke: #ec6608;
+  stroke-width: 3;
+  stroke-dasharray: 6 7;
+  stroke-linecap: round;
+  fill: none;
+  animation: dash 1.2s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -26;
+  }
+}

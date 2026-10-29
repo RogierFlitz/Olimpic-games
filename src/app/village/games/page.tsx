@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { StatusPill } from "@/components/shell";
 import { Stamp } from "@/components/visuals";
+import { useGoldenToken } from "@/components/live";
 import { loc, t, useLocale } from "@/components/hooks";
-import { gameOf, teamSchedule } from "@/lib/ranking";
+import { gameOf, opponentsOf, teamSchedule } from "@/lib/ranking";
 import { useEvent } from "@/lib/store";
 
 export default function GamesPage() {
@@ -13,6 +14,7 @@ export default function GamesPage() {
   const countryId = session?.countryId ?? "nl";
   const list = teamSchedule(event, countryId);
   const done = list.filter((a) => a.status === "completed");
+  const { found } = useGoldenToken();
 
   return (
     <div className="safe-bottom safe-top px-5">
@@ -36,6 +38,7 @@ export default function GamesPage() {
               />
             );
           })}
+          {found ? <Stamp label={t(locale, "tokenStamp")} icon="✦" /> : null}
         </div>
         <p className="mt-1 font-cond text-[11px] tracking-[0.14em] text-white/40">
           {done.length}/{list.length} {t(locale, "stamps")}
@@ -50,6 +53,7 @@ export default function GamesPage() {
           const medal =
             a.medals[countryId] === "gold" ? "🥇" : a.medals[countryId] === "silver" ? "🥈" : a.medals[countryId] === "bronze" ? "🥉" : "";
           const pts = a.pointsAwarded[countryId];
+          const foes = opponentsOf(event, a, countryId);
           return (
             <Link
               key={a.id}
@@ -79,6 +83,7 @@ export default function GamesPage() {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
+                        {foes.length ? ` · ${t(locale, "versus")} ${foes.map((f) => f.code).join(" ")}` : ""}
                       </span>
                     ) : null}
                   </div>

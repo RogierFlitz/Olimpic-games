@@ -2,7 +2,9 @@
 
 import { createContext, useCallback, useContext, useMemo, useSyncExternalStore } from "react";
 import { GAME_LIBRARY } from "./catalog";
+import { resetGoCue } from "./fx";
 import { COUNTRY_TEAM_NUMBER, createDemoEvent, DEMO_CODE } from "./seed";
+import { resetGoldenToken } from "./token";
 import { awardPlaces, headToHeadAward } from "./schedule";
 import type {
   EventPhase,
@@ -420,6 +422,8 @@ export function EventProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const resetDemo = useCallback(() => {
+    resetGoCue();
+    resetGoldenToken();
     publishEvent(createDemoEvent());
   }, []);
 
